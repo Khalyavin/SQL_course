@@ -21,6 +21,9 @@ def main():
         # {'product': supplier_id}
         product_dict = {}
 
+        cur.execute("DROP TABLE IF EXISTS suppliers")
+        conn.commit()
+
         # create table
         cur.execute("CREATE TABLE suppliers ("
                     "supplier_id serial PRIMARY KEY,"
@@ -56,13 +59,41 @@ def main():
 
                 cur.execute(query, rec_to_insert)
                 tmp_id = cur.fetchone()[0]
-                conn.commit()
 
                 # fill product dictionary
                 for ii in range(len(tmp_products)):
                     product_dict.update({tmp_products[ii]: tmp_id})
 
-        print(product_dict)
+        conn.commit()
+
+        # Close 'suppliers_file' and altering table 'products'
+        # Add column 'supplier_id'
+        cur.execute("ALTER TABLE products ADD COLUMN supplier_id smallint ")
+
+        # Add foreign key for products
+        cur.execute("ALTER TABLE products ADD CONSTRAINT fk_supplier_id_suppliers "
+                    "FOREIGN KEY (supplier_id) "
+                    "REFERENCES suppliers(supplier_id) "
+                    "ON DELETE CASCADE ")
+
+        # Check products for correspondence 'product' and 'supplier'
+        cur.execute("SELECT * FROM products")
+
+        rows = cur.fetchall()
+
+        for row in rows:
+            tmp_supp_id = product_dict[row[1]]
+            tmp_prod_id = row[0]
+            sql_str = f"UPDATE products SET supplier_id = {tmp_supp_id} WHERE product_id = {tmp_prod_id}"
+            cur.execute(sql_str)
+
+        conn.commit()
+
+    if cur:
+        cur.close()
+
+    if conn:
+        conn.close()
 
 
 if __name__ == '__main__':
