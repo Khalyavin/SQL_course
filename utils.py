@@ -20,6 +20,7 @@ def get_product_by_id():
         cur.execute(stmt)
         row = cur.fetchone()
 
+
         if row:
             data = {'product_id': row[0], 'product_name': row[1],
                     'product_category': row[2], 'product_price': row[3]}
