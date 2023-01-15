@@ -39,10 +39,10 @@ def main():
             # parsing file data
             for i in range(len(row_data)):
                 tmp_supplier_name = row_data[i].get('company_name')
-                tmp_contact_person = row_data[i].get('contact').strip(',')[0]
-                tmp_contact_post = row_data[i].get('contact').strip(',')[1]
-                tmp_country = row_data[i].get('address').strip(';')[0]
-                tmp_address = row_data[i].get('address').replace(tmp_country, '')
+                tmp_contact_person = row_data[i].get('contact').split(',')[0]
+                tmp_contact_post = row_data[i].get('contact').split(',')[1]
+                tmp_country = row_data[i].get('address').split(';')[0]
+                tmp_address = row_data[i].get('address').replace(tmp_country + ';', '').strip(';')
                 tmp_phone = row_data[i].get('phone')
                 tmp_fax = row_data[i].get('fax')
                 tmp_homepage = row_data[i].get('homepage')
@@ -56,6 +56,7 @@ def main():
 
                 cur.execute(query, rec_to_insert)
                 tmp_id = cur.fetchone()[0]
+                conn.commit()
 
                 # fill product dictionary
                 for ii in range(len(tmp_products)):
