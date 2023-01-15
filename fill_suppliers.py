@@ -1,6 +1,8 @@
 import json
 import psycopg2
 
+import utils
+
 
 suppliers_file = 'suppliers.json'
 
@@ -97,4 +99,33 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+#    main()
+
+    print('Data base update')
+
+    while True:
+        print('Выборка данных:')
+        print('(1) По продукту')
+        print('(2) По категории продукта')
+        print('(3) По заказчикам')
+        print('(4) По заказам')
+        print('(5) По сотрудникам')
+        print('(6) По товару')
+        print('[0] Выход')
+        tmp = int(input('Ваш выбор: '))
+
+        if tmp == 1:
+            utils.get_product_by_id()
+        elif tmp == 2:
+            utils.get_category_by_id()
+        elif tmp == 3:
+            utils.customers()
+        elif tmp == 4:
+            utils.orders()
+        elif tmp == 5:
+            utils.employees()
+        elif tmp == 6:
+            utils.products()
+        else:
+            break
+
