@@ -20,7 +20,6 @@ def get_product_by_id():
         cur.execute(stmt)
         row = cur.fetchone()
 
-
         if row:
             data = {'product_id': row[0], 'product_name': row[1],
                     'product_category': row[2], 'product_price': row[3]}
@@ -38,7 +37,41 @@ def get_product_by_id():
 
 
 def get_category_by_id():
-    pass
+    tmp = int(input('Enter product category: '))
+
+    connect()
+
+    # create cursor
+    with conn.cursor() as cur:
+        stmt = f"SELECT category_id, category_name, description, products.product_name" \
+               f" FROM categories" \
+               f" JOIN products" \
+               f" USING (category_id)" \
+               f" WHERE category_id = {tmp}"
+
+        cur.execute(stmt)
+        rows = cur.fetchall()
+
+        if rows:
+            data = {}
+            for row in rows:
+                if len(data) == 0:
+                    data = {'category_id': row[0], 'category_name': row[1],
+                            'description': row[2], 'product_name': [row[3]]}
+                else:
+                    data['product_name'].append(row[3])
+
+            with open('products_by_category.json', 'w') as w_file:
+                json.dump(data, w_file)
+
+            print('Данные по вашему запросу лежат в "products_by_category.json"')
+
+        else:
+            print('По вашему запросу нет категории продуктов с таким id')
+
+        if conn:
+            conn.close()
+
 
 def customers():
     pass
