@@ -86,13 +86,13 @@ def customers():
     tmp = int(input('Ваш выбор: '))
 
     if tmp == 1:
-        process('customer_1.sql', 1)
+        process('customers_1.sql', 1)
     elif tmp == 2:
-        process('customer_2.sql', 0)
+        process('customers_2.sql', 0)
     elif tmp == 3:
-        process('customer_2.sql', 0)
+        process('customers_3.sql', 0)
     elif tmp == 4:
-        process('customer_4.sql', 0)
+        process('customers_4.sql', 0)
 
 def orders():
     """SQL queries for portal, order page"""
@@ -109,7 +109,7 @@ def orders():
     elif tmp == 2:
         process('orders_2.sql', 1)
     elif tmp == 3:
-        process('orders_2.sql', 1)
+        process('orders_3.sql', 1)
 
 def employees():
     """SQL queries for portal, employees page"""
@@ -150,7 +150,17 @@ def connect():
 def process(f_name: str, fetch_sign: int):
     """Processor for sql query from f_name. Fetch_sign switch fetchall/fetchone"""
     with open(f_name, 'r', encoding='UTF-8') as fp:
-        stmt = fp.readlines()
+        stmt = ''
+        while True:
+            line = fp.readline()
+            if line:
+                stmt += line
+            else:
+                break
+
+    # Оставил для удобства просмотра sql запроса
+    print(stmt)
+    input('Press any key')
 
     connect()
 
@@ -168,6 +178,7 @@ def process(f_name: str, fetch_sign: int):
         else:
             row = cur.fetchone()
             print(row)
+    print()
 
     if conn:
         conn.close()
